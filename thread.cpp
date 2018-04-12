@@ -1,138 +1,185 @@
-/**********************************************************
-Assignment No:-A7
-Problem statement:-Consider a threaded binary tree using using pre-order threads rather than three order sets .
-			       Design an algorithm for traversal without using stack and analyse its complexity.
-
-NAME:-
-ROLL NO:-
-DIV:-
-BATCH:-
-
-******************************************************/	
-
 #include<iostream>
-#include<stdlib.h>
 using namespace std;
-
-class TBTNode
+class tnode
 {
 	public:
 	int data;
-	TBTNode *left,*right;
+	tnode *left;
+	tnode *right;
 	int lbit,rbit;
+};
+class tbt
+{
+	public:
+	tnode *head;
+	tnode *root;
+	tbt()
+	{
+		root=NULL;
+		head=NULL;
+	}
 	void create();
 	void preorder();
-	
 };
-void TBTNode::create()
+
+void tbt:: create()
 {
+	tnode *t,*x;
+	int flag=0;
 	char ans;
-	int flag;
-	//TBTNode *Root;
-	TBTNode *head;
-	TBTNode *node,*temp;
-	head=new TBTNode;
+	head=new tnode();
 	head->left=head;
 	head->right=head;
-	head->rbit=head->lbit=1;
-	TBTNode *Root=new TBTNode;
-	//Root=new TBTNode;
-	cout<<"\nEnter data for root:";
-	cin>>Root->data;
-	Root->left=head;
-	Root->right=head;
-	head->left=Root;
-	Root->lbit=Root->rbit=0;
+	head->lbit=1;
+	head->rbit=1;
+
+	root=new tnode();
+	cout<<"\nEnter the root:";
+	cin>>root->data;
+	root->left=head;
+	root->right=head;
+	root->lbit=1;
+	root->rbit=1;
+	head->left=root;
+	head->lbit=0;
 	do
 	{
-		node=new TBTNode;
-		cout<<"\nEnter data:";
-		cin>>node->data;
-		node->lbit=node->rbit=1;
-		temp=Root;
-		while(1)
+		flag=0;
+		t=root;
+		x=new tnode();
+		cout<<"\nEnter data";
+		cin>>x->data;
+		x->lbit=1;
+		x->rbit=1;
+		while(flag==0)
 		{
-			if(node->data<temp->data)
+			if(x->data < t->data)
 			{
-				if(temp->lbit==1)
+				if(t->lbit==1)
 				{
-					node->left=temp->left;
-					node->right=temp;
-					temp->lbit=0;
-					temp->left=node;
-					break;
+					t->lbit=0;
+					x->left=t->left;
+					t->left=x;
+					x->right=t;
+					flag++;
 				}
 				else
-				temp=temp->left;
+				{
+					t=t->left;
+				}
+			}	
+			else if(x->data > t->data)
+			{
+				if(t->rbit==1)
+				{
+					x->right=t->right;
+					t->right=x;
+					x->left=t;
+					t->rbit=0;
+					flag++;					
+				}
+				else
+				{
+					t=t->right;
+				}
 			}
 			else
 			{
-				if(temp->rbit==1)
-				{
-					node->left=temp;
-					node->right=temp->right;
-					temp->right=node;
-					temp->rbit=0;
-					break;
-				}
-				else
-				temp=temp->right;
+				cout<<"\n Node is already exist.....!!!";
 			}
 		}
-		cout<<"\nDo you want to add more?";
+		cout<<"\n Do you want to add more nodes:";
 		cin>>ans;
-	}while(ans=='y'||ans=='Y');
+	}while(ans=='Y'|| ans=='y');
 }
 
-void TBTNode::preorder()
+void tbt:: preorder()
 {
-	TBTNode *temp,*head,*Root;
+	tnode *t;
+	t=root;
 	int flag=0;
-	temp=Root;
-	while(temp!=head)
+	while(t!=head)
 	{
 		if(flag==0)
-			cout<<temp->data<<" ";
-		if(temp->lbit==0 && flag==0)              //go left till lbit is 1
 		{
-			temp=temp->left;
+			cout<<t->data<<"  ";
 		}
-		else if(temp->rbit==0)                    //go to right by child
+		if(t->lbit==0&& flag==0)
 		{
-			temp=temp->right;
-			flag=0;
+			t=t->left;
 		}
-		else                                       //go to right by thread
+		else if(t->rbit==1)
 		{
-			temp=temp->right;
+			t=t->right;
 			flag=1;
 		}
+		else if(t->rbit==0)
+		{
+			t=t->right;
+			flag=0;
+		}
 	}
+
 }
 int main()
 {
-	TBTNode obj;
-	obj.create();
-	obj.preorder();
+	int ch;
+	tbt th;
+	do
+	{
+		cout<<"\nMenu";
+		cout<<"\n 1.create tree";
+		cout<<"\n 2.display tree";
+		cout<<"\n Enter your choice:";
+		cin>>ch;
+		switch(ch)
+		{
+			case 1: th.create();
+					break;
+			case 2: th.preorder();
+					break;
+		 
+		}
+	}while(ch!=3);
 	return 0;
 }
+/* Output
+gescoe@gescoe-OptiPlex-3010:~/Desktop$ g++ the.cpp
+gescoe@gescoe-OptiPlex-3010:~/Desktop$ ./a.out
 
-/********OUTPUT********/
-/*gesoe@gesoe-OptiPlex-3010:~$ cd Desktop
-gesoe@gesoe-OptiPlex-3010:~/Desktop$ g++ 21.cpp
-gesoe@gesoe-OptiPlex-3010:~/Desktop$ ./a.out
-Enter data for root:5
-Enter data:2
-Do you want to add more?y
-Enter data:4
-Do you want to add more?y
-Enter data:3
-Do you want to add more?y
-Enter data:8
-Do you want to add more?y
-Enter data:6
-Do you want to add more?n
-5 0 2 4 3 8 gesoe@gesoe-OptiPlex-3010:~/Desktop$ 
-**************************************************/
+Menu
+ 1.create tree
+ 2.display tree
+ Enter your choice:1
 
+Enter the root:15
 
+Enter data10
+
+ Do you want to add more nodes:y
+
+Enter data5
+
+ Do you want to add more nodes:y
+
+Enter data12
+
+ Do you want to add more nodes:y
+
+Enter data20
+
+ Do you want to add more nodes:y
+
+Enter data17
+
+ Do you want to add more nodes:y
+
+Enter data25
+
+ Do you want to add more nodes:n
+
+Menu
+ 1.create tree
+ 2.display tree
+ Enter your choice:2
+15  10  5  12  20  17  25   */
